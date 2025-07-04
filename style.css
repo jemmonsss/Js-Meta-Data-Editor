@@ -1,46 +1,57 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: #1e1e1e;
+  background: #121212;
   color: #eee;
 }
+
 header {
-  background: #111;
+  background: #1f1f1f;
   padding: 1rem;
   text-align: center;
+  border-bottom: 1px solid #333;
 }
-.controls {
-  margin-top: 1rem;
+
+h1 {
+  margin-bottom: 0.5rem;
 }
-input[type="file"], button, a#download {
-  padding: 0.5rem 1rem;
-  margin: 0.3rem;
-  background: #333;
-  color: white;
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+button, input[type="file"], a#download-link {
+  background: #2c2c2c;
+  color: #fff;
   border: none;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
+  cursor: pointer;
   text-decoration: none;
-  display: inline-block;
 }
-input[type="file"] {
-  background: #444;
-}
+
 main {
   display: flex;
   flex-wrap: wrap;
-  padding: 1rem;
   gap: 2rem;
+  padding: 1rem;
 }
-#image-preview, #metadata {
+
+.image-panel, .metadata-panel {
   flex: 1 1 400px;
 }
+
 #preview {
-  width: 100%;
   max-width: 100%;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #222;
 }
-#form {
+
+#metadata-form {
   margin-top: 1rem;
   background: #2b2b2b;
   padding: 1rem;
@@ -48,26 +59,32 @@ main {
   max-height: 400px;
   overflow-y: auto;
 }
+
 .entry {
   margin-bottom: 1rem;
 }
+
 .entry label {
-  font-weight: bold;
   display: block;
+  font-weight: bold;
 }
+
 .entry input {
   width: 100%;
   padding: 0.4rem;
-  margin-top: 0.2rem;
+  margin-top: 0.3rem;
+  border-radius: 4px;
   border: none;
   background: #444;
-  color: white;
-  border-radius: 4px;
+  color: #fff;
 }
-pre#json {
+
+#json-view {
   background: #111;
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   max-height: 300px;
   overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.9rem;
 }
