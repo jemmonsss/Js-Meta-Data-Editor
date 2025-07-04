@@ -3,12 +3,13 @@ const mainUpload = document.getElementById("main-upload");
 const metaUpload = document.getElementById("meta-upload");
 const form = document.getElementById("metadata-form");
 const jsonView = document.getElementById("json-view");
-const downloadLink = document.getElementById("download-link");
 const scrambleBtn = document.getElementById("scramble");
 const saveBtn = document.getElementById("save");
 
 let originalDataURL = null;
 let exifData = null;
+let mapInitialized = false;
+let mapInstance = null;
 
 function loadImage(file, replaceMetaOnly = false) {
   const reader = new FileReader();
@@ -24,19 +25,17 @@ function loadImage(file, replaceMetaOnly = false) {
       const exif = piexif.load(base64);
       if (replaceMetaOnly) {
         exifData = exif;
-        renderForm();
-        jsonView.textContent = JSON.stringify(exifData, null, 2);
       } else {
         exifData = exif;
-        renderForm();
-        jsonView.textContent = JSON.stringify(exifData, null, 2);
       }
     } catch (err) {
       alert("No metadata found in the image.");
       exifData = {};
-      renderForm();
-      jsonView.textContent = "{}";
     }
+
+    renderForm();
+    updateMapFromExif(exifData);
+    jsonView.textContent = JSON.stringify(exifData, null, 2);
   };
   reader.readAsDataURL(file);
 }
@@ -97,8 +96,7 @@ function scrambleMetadata() {
   const now = new Date();
 
   const randomCoords = () => [
-    Math.random() * 90, // latitude
-    Math.random() * 180 // longitude
+    Math.floor(Math.random() * 90), 0, 0
   ];
 
   const randomStr = () => Math.random().toString(36).substring(2, 12);
@@ -115,11 +113,12 @@ function scrambleMetadata() {
   }
 
   if (exifData["GPS"]) {
-    exifData["GPS"][piexif.GPSIFD.GPSLatitude] = [randomCoords()[0], 0, 0];
-    exifData["GPS"][piexif.GPSIFD.GPSLongitude] = [randomCoords()[1], 0, 0];
+    exifData["GPS"][piexif.GPSIFD.GPSLatitude] = randomCoords();
+    exifData["GPS"][piexif.GPSIFD.GPSLongitude] = randomCoords();
   }
 
   renderForm();
+  updateMapFromExif(exifData);
   jsonView.textContent = JSON.stringify(exifData, null, 2);
 }
 
@@ -127,8 +126,39 @@ function saveImage() {
   updateExifFromForm();
   const exifStr = piexif.dump(exifData);
   const newDataUrl = piexif.insert(exifStr, originalDataURL);
-  downloadLink.href = newDataUrl;
-  jsonView.textContent = JSON.stringify(exifData, null, 2);
+  const link = document.createElement('a');
+  link.href = newDataUrl;
+  link.download = 'updated.jpg';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function updateMapFromExif(exif) {
+  const lat = exif?.GPS?.[piexif.GPSIFD.GPSLatitude];
+  const lon = exif?.GPS?.[piexif.GPSIFD.GPSLongitude];
+
+  if (!lat || !lon) return;
+
+  const toDecimal = ([deg, min, sec]) =>
+    deg + min / 60 + sec / 3600;
+
+  const latitude = toDecimal(lat);
+  const longitude = toDecimal(lon);
+
+  if (!mapInitialized) {
+    mapInstance = L.map('map').setView([latitude, longitude], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(mapInstance);
+    mapInitialized = true;
+  } else {
+    mapInstance.setView([latitude, longitude], 10);
+  }
+
+  L.marker([latitude, longitude]).addTo(mapInstance)
+    .bindPopup("📍 Location from Metadata")
+    .openPopup();
 }
 
 mainUpload.addEventListener("change", e => {
