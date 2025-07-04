@@ -1,73 +1,73 @@
-* {
-  box-sizing: border-box;
-}
 body {
-  font-family: "Segoe UI", sans-serif;
-  background-color: #1e1e1e;
-  color: #eee;
   margin: 0;
-  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #1e1e1e;
+  color: #eee;
 }
 header {
+  background: #111;
   padding: 1rem;
-  background: #333;
   text-align: center;
 }
 .controls {
   margin-top: 1rem;
 }
-button, input[type="file"] {
-  margin: 0.2rem;
+input[type="file"], button, a#download {
   padding: 0.5rem 1rem;
-  background: #444;
-  color: #fff;
+  margin: 0.3rem;
+  background: #333;
+  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-block;
 }
-button:hover {
-  background: #666;
+input[type="file"] {
+  background: #444;
 }
 main {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
   padding: 1rem;
+  gap: 2rem;
 }
-#left, #right {
-  flex: 1 1 300px;
+#image-preview, #metadata {
+  flex: 1 1 400px;
 }
 #preview {
   width: 100%;
-  max-width: 600px;
-  border-radius: 8px;
+  max-width: 100%;
+  border-radius: 10px;
   background: #222;
 }
-#metadata-form {
+#form {
+  margin-top: 1rem;
+  background: #2b2b2b;
+  padding: 1rem;
+  border-radius: 8px;
   max-height: 400px;
   overflow-y: auto;
-  background: #2a2a2a;
-  padding: 1rem;
-  border-radius: 5px;
 }
-.meta-entry {
+.entry {
   margin-bottom: 1rem;
 }
-.meta-entry label {
+.entry label {
   font-weight: bold;
   display: block;
 }
-.meta-entry input {
+.entry input {
   width: 100%;
-  padding: 0.3rem;
-  background: #444;
+  padding: 0.4rem;
+  margin-top: 0.2rem;
   border: none;
-  color: #eee;
+  background: #444;
+  color: white;
+  border-radius: 4px;
 }
-#json-view {
+pre#json {
   background: #111;
   padding: 1rem;
+  border-radius: 6px;
   max-height: 300px;
   overflow-y: auto;
-  white-space: pre-wrap;
-  border-radius: 5px;
 }
