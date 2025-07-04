@@ -10,6 +10,7 @@ let originalDataURL = null;
 let exifData = null;
 let mapInitialized = false;
 let mapInstance = null;
+let mapMarker = null;
 
 function loadImage(file, replaceMetaOnly = false) {
   const reader = new FileReader();
@@ -23,11 +24,7 @@ function loadImage(file, replaceMetaOnly = false) {
 
     try {
       const exif = piexif.load(base64);
-      if (replaceMetaOnly) {
-        exifData = exif;
-      } else {
-        exifData = exif;
-      }
+      exifData = exif;
     } catch (err) {
       alert("No metadata found in the image.");
       exifData = {};
@@ -115,6 +112,8 @@ function scrambleMetadata() {
   if (exifData["GPS"]) {
     exifData["GPS"][piexif.GPSIFD.GPSLatitude] = randomCoords();
     exifData["GPS"][piexif.GPSIFD.GPSLongitude] = randomCoords();
+    exifData["GPS"][piexif.GPSIFD.GPSLatitudeRef] = "N";
+    exifData["GPS"][piexif.GPSIFD.GPSLongitudeRef] = "E";
   }
 
   renderForm();
@@ -137,14 +136,27 @@ function saveImage() {
 function updateMapFromExif(exif) {
   const lat = exif?.GPS?.[piexif.GPSIFD.GPSLatitude];
   const lon = exif?.GPS?.[piexif.GPSIFD.GPSLongitude];
+  const latRef = exif?.GPS?.[piexif.GPSIFD.GPSLatitudeRef];
+  const lonRef = exif?.GPS?.[piexif.GPSIFD.GPSLongitudeRef];
 
   if (!lat || !lon) return;
 
-  const toDecimal = ([deg, min, sec]) =>
-    deg + min / 60 + sec / 3600;
+  const toDecimal = ([deg, min, sec], ref) => {
+    let val = deg + min / 60 + sec / 3600;
+    if (ref === "S" || ref === "W") val *= -1;
+    return val;
+  };
 
-  const latitude = toDecimal(lat);
-  const longitude = toDecimal(lon);
+  const toExifFormat = (decimal) => {
+    const deg = Math.floor(Math.abs(decimal));
+    const minFloat = (Math.abs(decimal) - deg) * 60;
+    const min = Math.floor(minFloat);
+    const sec = Math.round((minFloat - min) * 60 * 100) / 100;
+    return [deg, min, sec];
+  };
+
+  const latitude = toDecimal(lat, latRef);
+  const longitude = toDecimal(lon, lonRef);
 
   if (!mapInitialized) {
     mapInstance = L.map('map').setView([latitude, longitude], 10);
@@ -152,13 +164,31 @@ function updateMapFromExif(exif) {
       attribution: '© OpenStreetMap contributors'
     }).addTo(mapInstance);
     mapInitialized = true;
-  } else {
-    mapInstance.setView([latitude, longitude], 10);
   }
 
-  L.marker([latitude, longitude]).addTo(mapInstance)
-    .bindPopup("📍 Location from Metadata")
+  if (mapMarker) mapInstance.removeLayer(mapMarker);
+  mapMarker = L.marker([latitude, longitude], { draggable: true }).addTo(mapInstance)
+    .bindPopup("📍 Drag me to set new GPS")
     .openPopup();
+
+  mapMarker.on('dragend', () => {
+    const { lat, lng } = mapMarker.getLatLng();
+    const latExif = toExifFormat(lat);
+    const lonExif = toExifFormat(lng);
+
+    exifData["GPS"] = {
+      ...exifData["GPS"],
+      [piexif.GPSIFD.GPSLatitude]: latExif,
+      [piexif.GPSIFD.GPSLatitudeRef]: lat >= 0 ? "N" : "S",
+      [piexif.GPSIFD.GPSLongitude]: lonExif,
+      [piexif.GPSIFD.GPSLongitudeRef]: lng >= 0 ? "E" : "W",
+    };
+
+    renderForm();
+    jsonView.textContent = JSON.stringify(exifData, null, 2);
+  });
+
+  mapInstance.setView([latitude, longitude], 10);
 }
 
 mainUpload.addEventListener("change", e => {
@@ -169,7 +199,7 @@ mainUpload.addEventListener("change", e => {
 
 metaUpload.addEventListener("change", e => {
   if (e.target.files.length) {
-    loadImage(e.target.files[0], true); // Only replace metadata
+    loadImage(e.target.files[0], true); // Replace metadata only
   }
 });
 
