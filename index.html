@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo Metadata Viewer & Editor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>📷 Photo Metadata Tool</h1>
+  <input type="file" id="upload" accept="image/jpeg" />
+  <button id="random">🔀 Scramble Image</button>
+  <button id="replace">♻️ Replace Image</button>
+
+  <div id="image-section">
+    <img id="preview" src="" alt="Image preview" />
+  </div>
+
+  <h2>📋 Metadata</h2>
+  <form id="metadata-form"></form>
+
+  <button id="save">💾 Save Metadata</button>
+  <a id="download" style="display:none;" download="updated.jpg">Download Updated Image</a>
+
+  <script src="https://cdn.jsdelivr.net/npm/piexifjs"></script>
+  <script src="script.js"></script>
+</body>
+</html>
