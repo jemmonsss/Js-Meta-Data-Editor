@@ -3,24 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Photo Metadata Viewer & Editor</title>
+  <title>Photo Metadata Tool</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>📷 Photo Metadata Tool</h1>
-  <input type="file" id="upload" accept="image/jpeg" />
-  <button id="random">🔀 Scramble Image</button>
-  <button id="replace">♻️ Replace Image</button>
+  <header>
+    <h1>📷 Photo Metadata Viewer & Editor</h1>
+    <div class="controls">
+      <input type="file" id="upload" accept="image/jpeg" />
+      <button id="random">🔀 Scramble</button>
+      <button id="replace">♻️ Replace</button>
+      <button id="save">💾 Save</button>
+      <a id="download" style="display:none;" download="updated.jpg">Download</a>
+    </div>
+  </header>
 
-  <div id="image-section">
-    <img id="preview" src="" alt="Image preview" />
-  </div>
+  <main>
+    <section id="left">
+      <img id="preview" src="" alt="Image preview" />
+    </section>
 
-  <h2>📋 Metadata</h2>
-  <form id="metadata-form"></form>
-
-  <button id="save">💾 Save Metadata</button>
-  <a id="download" style="display:none;" download="updated.jpg">Download Updated Image</a>
+    <section id="right">
+      <h2>🧬 Metadata (editable)</h2>
+      <div id="metadata-form"></div>
+      <h3>📄 Raw JSON</h3>
+      <pre id="json-view">{}</pre>
+    </section>
+  </main>
 
   <script src="https://cdn.jsdelivr.net/npm/piexifjs"></script>
   <script src="script.js"></script>

@@ -1,13 +1,14 @@
 const upload = document.getElementById("upload");
 const preview = document.getElementById("preview");
 const form = document.getElementById("metadata-form");
+const jsonView = document.getElementById("json-view");
 const saveBtn = document.getElementById("save");
 const downloadLink = document.getElementById("download");
 const replaceBtn = document.getElementById("replace");
 const randomBtn = document.getElementById("random");
 
-let currentExif = null;
 let originalImage = null;
+let currentExif = null;
 
 function loadImage(file) {
   const reader = new FileReader();
@@ -15,48 +16,59 @@ function loadImage(file) {
     const dataUrl = e.target.result;
     originalImage = dataUrl;
     preview.src = dataUrl;
+
     try {
       const exif = piexif.load(dataUrl);
       currentExif = exif;
-      populateForm(exif);
+      renderEditableForm(exif);
+      renderJSONView(exif);
     } catch (err) {
       console.warn("No EXIF found.");
       form.innerHTML = "<p>No metadata found.</p>";
+      jsonView.textContent = "{}";
     }
   };
   reader.readAsDataURL(file);
 }
 
-function populateForm(exif) {
+function renderEditableForm(exif) {
   form.innerHTML = "";
-  const entries = exif["0th"];
-  for (let tag in entries) {
-    const fieldName = piexif.TAGS["0th"][tag]["name"];
-    const value = entries[tag];
-    form.innerHTML += `
-      <label>${fieldName}
-        <input data-tag="${tag}" value="${value}" />
-      </label>`;
-  }
+  const sections = Object.keys(exif);
+  sections.forEach(section => {
+    const entries = exif[section];
+    form.innerHTML += `<h3>${section}</h3>`;
+    for (let tag in entries) {
+      const name = piexif.TAGS[section]?.[tag]?.name || `Tag ${tag}`;
+      const value = entries[tag];
+      form.innerHTML += `
+        <div class="meta-entry">
+          <label>${name} (${section}:${tag})</label>
+          <input data-section="${section}" data-tag="${tag}" value="${value}" />
+        </div>`;
+    }
+  });
+}
+
+function renderJSONView(exif) {
+  jsonView.textContent = JSON.stringify(exif, null, 2);
 }
 
 function updateExif() {
-  const entries = currentExif["0th"];
-  const inputs = form.querySelectorAll("input[data-tag]");
-  inputs.forEach((input) => {
+  const inputs = form.querySelectorAll("input[data-section]");
+  inputs.forEach(input => {
+    const section = input.dataset.section;
     const tag = input.dataset.tag;
     let value = input.value;
-    // Try to parse as int if appropriate
-    entries[tag] = isNaN(value) ? value : parseInt(value);
+
+    // Attempt number parse, otherwise keep as string
+    currentExif[section][tag] = isNaN(value) ? value : parseFloat(value);
   });
 
   const exifStr = piexif.dump(currentExif);
-  const binary = atob(originalImage.split(",")[1]);
-  const binaryArray = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) binaryArray[i] = binary.charCodeAt(i);
   const inserted = piexif.insert(exifStr, originalImage);
   downloadLink.href = inserted;
   downloadLink.style.display = "inline";
+  renderJSONView(currentExif);
 }
 
 saveBtn.addEventListener("click", () => {
