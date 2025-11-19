@@ -28,6 +28,9 @@
       padding: 1.5rem 2rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     h1 {
@@ -62,12 +65,12 @@
       overflow: hidden;
     }
 
-    button:hover, .file-input-wrapper:hover {
+    button:hover:not(:disabled), .file-input-wrapper:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
     }
 
-    button:active, .file-input-wrapper:active {
+    button:active:not(:disabled), .file-input-wrapper:active {
       transform: translateY(0);
     }
 
@@ -102,8 +105,24 @@
       box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
     }
 
+    #strip-all {
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      box-shadow: 0 4px 12px rgba(250, 112, 154, 0.3);
+    }
+
+    #copy-meta {
+      background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+      box-shadow: 0 4px 12px rgba(48, 207, 208, 0.3);
+    }
+
+    #compare {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      color: #333;
+      box-shadow: 0 4px 12px rgba(168, 237, 234, 0.3);
+    }
+
     main {
-      max-width: 1600px;
+      max-width: 1800px;
       margin: 2rem auto;
       padding: 0 2rem;
       display: grid;
@@ -141,6 +160,10 @@
       color: #a8b2d1;
     }
 
+    .image-container {
+      position: relative;
+    }
+
     #preview {
       width: 100%;
       height: auto;
@@ -151,10 +174,39 @@
       display: block;
     }
 
+    .image-info {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .info-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #a8b2d1;
+      margin-top: 0.25rem;
+    }
+
     .placeholder {
       width: 100%;
       height: 300px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       background: rgba(0, 0, 0, 0.3);
@@ -164,27 +216,56 @@
       border: 2px dashed rgba(102, 126, 234, 0.3);
     }
 
+    .placeholder-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .search-box {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.3);
+      color: #e0e0e0;
+      font-size: 0.9rem;
+    }
+
+    .search-box::before {
+      content: "🔍";
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+    }
+
     #metadata-form {
-      max-height: 400px;
+      max-height: 450px;
       overflow-y: auto;
       padding-right: 0.5rem;
     }
 
-    #metadata-form::-webkit-scrollbar {
+    #metadata-form::-webkit-scrollbar, #json-view::-webkit-scrollbar {
       width: 8px;
     }
 
-    #metadata-form::-webkit-scrollbar-track {
+    #metadata-form::-webkit-scrollbar-track, #json-view::-webkit-scrollbar-track {
       background: rgba(0, 0, 0, 0.2);
       border-radius: 4px;
     }
 
-    #metadata-form::-webkit-scrollbar-thumb {
+    #metadata-form::-webkit-scrollbar-thumb, #json-view::-webkit-scrollbar-thumb {
       background: rgba(102, 126, 234, 0.5);
       border-radius: 4px;
     }
 
-    #metadata-form::-webkit-scrollbar-thumb:hover {
+    #metadata-form::-webkit-scrollbar-thumb:hover, #json-view::-webkit-scrollbar-thumb:hover {
       background: rgba(102, 126, 234, 0.7);
     }
 
@@ -197,14 +278,38 @@
       border-bottom: 1px solid rgba(102, 126, 234, 0.3);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .section-title:first-child {
       margin-top: 0;
     }
 
+    .section-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .mini-btn {
+      background: rgba(102, 126, 234, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      color: #667eea;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mini-btn:hover {
+      background: rgba(102, 126, 234, 0.3);
+    }
+
     .entry {
       margin-bottom: 1rem;
+      position: relative;
     }
 
     .entry label {
@@ -217,7 +322,7 @@
 
     .entry input {
       width: 100%;
-      padding: 0.6rem;
+      padding: 0.6rem 2.5rem 0.6rem 0.6rem;
       border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(0, 0, 0, 0.3);
@@ -233,6 +338,29 @@
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
+    .entry-actions {
+      position: absolute;
+      right: 0.5rem;
+      top: 1.8rem;
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .entry-btn {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 0.25rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .entry-btn:hover {
+      color: #667eea;
+      transform: scale(1.1);
+    }
+
     #json-view {
       background: rgba(0, 0, 0, 0.4);
       padding: 1rem;
@@ -243,20 +371,13 @@
       font-size: 0.85rem;
       color: #a8e6cf;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
     }
 
-    #json-view::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    #json-view::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 4px;
-    }
-
-    #json-view::-webkit-scrollbar-thumb {
-      background: rgba(102, 126, 234, 0.5);
-      border-radius: 4px;
+    .json-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
     .map-panel {
@@ -267,6 +388,13 @@
       height: 400px;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .map-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
     }
 
     .empty-state {
@@ -290,21 +418,176 @@
       font-weight: 600;
       margin-left: 0.5rem;
     }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(30, 30, 50, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(102, 126, 234, 0.5);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      transform: translateY(150%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      max-width: 300px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: rgba(30, 30, 50, 0.95);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .compare-item h4 {
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    .diff-highlight {
+      background: rgba(245, 87, 108, 0.2);
+      border-left: 3px solid #f5576c;
+      padding-left: 0.5rem;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: #888;
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+
+    .tab-btn:hover {
+      color: #a8b2d1;
+    }
+
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .history-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-item:hover {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: #667eea;
+    }
+
+    .history-time {
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    .batch-controls {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>📷 Photo Metadata Editor</h1>
+    <h1>📷 Photo Metadata Editor Pro</h1>
     <div class="toolbar">
       <div class="file-input-wrapper">
         📁 Load Image
         <input type="file" id="main-upload" accept="image/jpeg,image/jpg" />
       </div>
       <div class="file-input-wrapper">
-        🔄 Replace Metadata
-        <input type="file" id="meta-upload" accept="image/jpeg,image/jpg" title="Replace metadata from another photo"/>
+        📂 Batch Load
+        <input type="file" id="batch-upload" accept="image/jpeg,image/jpg" multiple />
       </div>
-      <button id="scramble" disabled>🎲 Scramble Metadata</button>
+      <div class="file-input-wrapper">
+        🔄 Copy Metadata From
+        <input type="file" id="meta-upload" accept="image/jpeg,image/jpg" title="Copy metadata from another photo"/>
+      </div>
+      <button id="strip-all" disabled>🗑️ Strip All Metadata</button>
+      <button id="scramble" disabled>🎲 Randomize</button>
+      <button id="compare" disabled>⚖️ Compare</button>
       <button id="save" disabled>💾 Save & Download</button>
     </div>
   </header>
@@ -313,69 +596,233 @@
     <section class="panel image-panel">
       <h2>🖼️ Image Preview</h2>
       <div id="preview-container">
-        <div class="placeholder">Upload an image to get started</div>
+        <div class="placeholder">
+          <div class="placeholder-icon">📸</div>
+          <p>Drop an image or click "Load Image" to get started</p>
+        </div>
+      </div>
+      <div class="image-info" id="image-info" style="display: none;">
+        <div class="info-item">
+          <div class="info-label">Dimensions</div>
+          <div class="info-value" id="dimensions">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">File Size</div>
+          <div class="info-value" id="filesize">-</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Format</div>
+          <div class="info-value" id="format">JPEG</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Camera</div>
+          <div class="info-value" id="camera">-</div>
+        </div>
+      </div>
+      <div class="batch-controls" id="batch-controls" style="display: none;">
+        <button id="prev-batch">⬅️ Previous</button>
+        <span id="batch-counter" style="color: #a8b2d1; padding: 0.65rem 1.25rem;">1 / 1</span>
+        <button id="next-batch">➡️ Next</button>
+        <button id="save-all-batch">💾 Save All</button>
       </div>
     </section>
     
     <section class="panel metadata-panel">
-      <h2>🧬 Metadata Editor</h2>
-      <div id="metadata-form">
-        <div class="empty-state">
-          <div class="empty-state-icon">📋</div>
-          <p>No metadata loaded yet</p>
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="editor">✏️ Editor</button>
+        <button class="tab-btn" data-tab="json">📄 JSON</button>
+        <button class="tab-btn" data-tab="history">🕒 History</button>
+      </div>
+
+      <div id="editor-tab">
+        <div class="search-box">
+          <input type="text" id="search-meta" placeholder="Search metadata fields..." />
+        </div>
+        <div id="metadata-form">
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <p>No metadata loaded yet</p>
+          </div>
         </div>
       </div>
-      <h3>📄 Raw JSON Data</h3>
-      <pre id="json-view">{}</pre>
+
+      <div id="json-tab" style="display: none;">
+        <div class="json-actions">
+          <button class="mini-btn" id="copy-json">📋 Copy</button>
+          <button class="mini-btn" id="download-json">⬇️ Download</button>
+          <button class="mini-btn" id="import-json">📤 Import</button>
+        </div>
+        <pre id="json-view">{}</pre>
+      </div>
+
+      <div id="history-tab" style="display: none;">
+        <div id="history-list">
+          <div class="empty-state">
+            <div class="empty-state-icon">🕒</div>
+            <p>No history yet</p>
+          </div>
+        </div>
+        <button class="mini-btn" id="clear-history" style="margin-top: 1rem; width: 100%;">Clear History</button>
+      </div>
     </section>
 
     <section class="panel map-panel">
       <h2>🗺️ GPS Location <span class="info-badge" id="gps-status">No GPS data</span></h2>
       <div id="map"></div>
+      <div class="map-controls">
+        <button class="mini-btn" id="center-map" disabled>🎯 Center on Marker</button>
+        <button class="mini-btn" id="clear-gps" disabled>🗑️ Remove GPS</button>
+        <button class="mini-btn" id="add-gps" disabled>➕ Add GPS Here</button>
+        <input type="text" id="search-location" placeholder="Search location..." style="flex: 1; min-width: 200px; padding: 0.5rem; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.3); color: #e0e0e0;" />
+        <button class="mini-btn" id="search-location-btn">🔍 Search</button>
+      </div>
     </section>
   </main>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="compare-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚖️ Metadata Comparison</h2>
+        <button class="modal-close">×</button>
+      </div>
+      <div class="compare-grid" id="compare-content"></div>
+    </div>
+  </div>
 
   <script>
     const previewContainer = document.getElementById("preview-container");
     const mainUpload = document.getElementById("main-upload");
+    const batchUpload = document.getElementById("batch-upload");
     const metaUpload = document.getElementById("meta-upload");
     const form = document.getElementById("metadata-form");
     const jsonView = document.getElementById("json-view");
     const scrambleBtn = document.getElementById("scramble");
     const saveBtn = document.getElementById("save");
+    const stripAllBtn = document.getElementById("strip-all");
+    const compareBtn = document.getElementById("compare");
     const gpsStatus = document.getElementById("gps-status");
+    const searchMeta = document.getElementById("search-meta");
+    const toast = document.getElementById("toast");
 
     let originalDataURL = null;
+    let originalExifData = null;
     let exifData = null;
+    let currentFile = null;
     let mapInitialized = false;
     let mapInstance = null;
     let mapMarker = null;
+    let editHistory = [];
+    let batchFiles = [];
+    let currentBatchIndex = 0;
+
+    // Drag and drop
+    previewContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      previewContainer.style.borderColor = '#667eea';
+    });
+
+    previewContainer.addEventListener('dragleave', () => {
+      previewContainer.style.borderColor = '';
+    });
+
+    previewContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      previewContainer.style.borderColor = '';
+      if (e.dataTransfer.files.length) {
+        loadImage(e.dataTransfer.files[0]);
+      }
+    });
+
+    function showToast(message, duration = 3000) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    function saveToHistory(action) {
+      editHistory.unshift({
+        action,
+        timestamp: new Date().toISOString(),
+        exifData: JSON.parse(JSON.stringify(exifData))
+      });
+      if (editHistory.length > 20) editHistory.pop();
+      updateHistoryUI();
+    }
+
+    function updateHistoryUI() {
+      const historyList = document.getElementById("history-list");
+      if (editHistory.length === 0) {
+        historyList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🕒</div><p>No history yet</p></div>';
+        return;
+      }
+      
+      historyList.innerHTML = editHistory.map((item, index) => `
+        <div class="history-item" data-index="${index}">
+          <strong>${item.action}</strong>
+          <div class="history-time">${new Date(item.timestamp).toLocaleString()}</div>
+        </div>
+      `).join('');
+
+      historyList.querySelectorAll('.history-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const index = parseInt(item.dataset.index);
+          exifData = JSON.parse(JSON.stringify(editHistory[index].exifData));
+          renderForm();
+          updateMapFromExif(exifData);
+          jsonView.textContent = JSON.stringify(exifData, null, 2);
+          showToast('✅ Restored from history');
+        });
+      });
+    }
 
     function loadImage(file, replaceMetaOnly = false) {
+      currentFile = file;
       const reader = new FileReader();
       reader.onload = function (e) {
         const base64 = e.target.result;
 
         if (!replaceMetaOnly) {
           originalDataURL = base64;
-          const img = document.createElement('img');
+          const img = new Image();
+          img.onload = function() {
+            document.getElementById('dimensions').textContent = `${img.width} × ${img.height}`;
+          };
           img.id = 'preview';
           img.src = base64;
           previewContainer.innerHTML = '';
           previewContainer.appendChild(img);
+          
+          document.getElementById('filesize').textContent = formatBytes(file.size);
+          document.getElementById('image-info').style.display = 'grid';
         }
 
         try {
           const exif = piexif.load(base64);
           exifData = exif;
+          originalExifData = JSON.parse(JSON.stringify(exif));
           
-          // Initialize GPS section if it doesn't exist
           if (!exifData["GPS"]) {
             exifData["GPS"] = {};
           }
+
+          // Update camera info
+          const make = exifData["0th"]?.[piexif.ImageIFD.Make] || '';
+          const model = exifData["0th"]?.[piexif.ImageIFD.Model] || '';
+          document.getElementById('camera').textContent = make && model ? `${make} ${model}` : 'Unknown';
           
           scrambleBtn.disabled = false;
           saveBtn.disabled = false;
+          stripAllBtn.disabled = false;
+          compareBtn.disabled = false;
+          document.getElementById('add-gps').disabled = false;
+
+          if (!replaceMetaOnly) {
+            saveToHistory('Image Loaded');
+          } else {
+            saveToHistory('Metadata Replaced');
+          }
         } catch (err) {
           console.error("Error loading EXIF:", err);
           exifData = {
@@ -386,8 +833,13 @@
             "1st": {},
             "thumbnail": null
           };
+          originalExifData = JSON.parse(JSON.stringify(exifData));
+          document.getElementById('camera').textContent = 'None';
           scrambleBtn.disabled = false;
           saveBtn.disabled = false;
+          stripAllBtn.disabled = false;
+          compareBtn.disabled = false;
+          document.getElementById('add-gps').disabled = false;
         }
 
         renderForm();
@@ -396,247 +848,3 @@
       };
       reader.readAsDataURL(file);
     }
-
-    function renderForm() {
-      form.innerHTML = "";
-      
-      const sections = ["0th", "Exif", "GPS", "Interop"];
-      
-      sections.forEach(section => {
-        if (!exifData[section] || typeof exifData[section] !== 'object') return;
-        
-        const entries = Object.entries(exifData[section]).filter(([tag, val]) => 
-          val !== null && val !== undefined && tag !== 'thumbnail'
-        );
-        
-        if (entries.length === 0) return;
-
-        const sectionTitle = document.createElement("div");
-        sectionTitle.className = "section-title";
-        sectionTitle.textContent = section;
-        form.appendChild(sectionTitle);
-
-        entries.forEach(([tag, val]) => {
-          const tagInfo = piexif.TAGS[section]?.[tag];
-          const name = tagInfo?.name || `Tag ${tag}`;
-
-          const wrapper = document.createElement("div");
-          wrapper.className = "entry";
-
-          const label = document.createElement("label");
-          label.textContent = `${name}`;
-
-          const input = document.createElement("input");
-          input.dataset.section = section;
-          input.dataset.tag = tag;
-          
-          // Handle different value types
-          if (Array.isArray(val)) {
-            input.value = val.join(", ");
-          } else if (typeof val === 'object') {
-            input.value = JSON.stringify(val);
-          } else {
-            input.value = val;
-          }
-
-          input.addEventListener('input', () => {
-            updateExifFromForm();
-            jsonView.textContent = JSON.stringify(exifData, null, 2);
-          });
-
-          wrapper.appendChild(label);
-          wrapper.appendChild(input);
-          form.appendChild(wrapper);
-        });
-      });
-      
-      if (form.innerHTML === "") {
-        form.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📋</div><p>No metadata found in this image</p></div>';
-      }
-    }
-
-    function updateExifFromForm() {
-      const inputs = form.querySelectorAll("input");
-      inputs.forEach(input => {
-        const section = input.dataset.section;
-        const tag = input.dataset.tag;
-        const raw = input.value.trim();
-
-        if (!raw) return;
-
-        let val;
-        // Try to parse as array
-        if (raw.includes(",")) {
-          const parts = raw.split(",").map(v => v.trim());
-          val = parts.map(v => {
-            const num = parseFloat(v);
-            return isNaN(num) ? v : num;
-          });
-        } 
-        // Try to parse as number
-        else if (!isNaN(raw) && raw !== '') {
-          val = parseFloat(raw);
-        } 
-        // Keep as string
-        else {
-          val = raw;
-        }
-
-        if (!exifData[section]) {
-          exifData[section] = {};
-        }
-        exifData[section][tag] = val;
-      });
-    }
-
-    function scrambleMetadata() {
-      if (!exifData) return;
-      
-      const now = new Date();
-      const formattedDate = now.toISOString().replace(/[T\-:\.Z]/g, ' ').trim().substring(0, 19);
-
-      const randomCoords = () => {
-        const deg = Math.floor(Math.random() * 90);
-        const min = Math.floor(Math.random() * 60);
-        const sec = Math.floor(Math.random() * 60);
-        return [deg, min, sec];
-      };
-
-      const randomStr = () => Math.random().toString(36).substring(2, 10).toUpperCase();
-
-      if (!exifData["0th"]) exifData["0th"] = {};
-      exifData["0th"][piexif.ImageIFD.Make] = `Brand${randomStr()}`;
-      exifData["0th"][piexif.ImageIFD.Model] = `Model${randomStr()}`;
-      exifData["0th"][piexif.ImageIFD.Software] = "PhotoEditor Pro 2024";
-
-      if (!exifData["Exif"]) exifData["Exif"] = {};
-      exifData["Exif"][piexif.ExifIFD.DateTimeOriginal] = formattedDate;
-      exifData["Exif"][piexif.ExifIFD.LensMake] = `Lens${randomStr()}`;
-
-      if (!exifData["GPS"]) exifData["GPS"] = {};
-      const lat = randomCoords();
-      const lon = randomCoords();
-      exifData["GPS"][piexif.GPSIFD.GPSLatitude] = lat;
-      exifData["GPS"][piexif.GPSIFD.GPSLongitude] = lon;
-      exifData["GPS"][piexif.GPSIFD.GPSLatitudeRef] = Math.random() > 0.5 ? "N" : "S";
-      exifData["GPS"][piexif.GPSIFD.GPSLongitudeRef] = Math.random() > 0.5 ? "E" : "W";
-
-      renderForm();
-      updateMapFromExif(exifData);
-      jsonView.textContent = JSON.stringify(exifData, null, 2);
-    }
-
-    function saveImage() {
-      if (!originalDataURL || !exifData) return;
-      
-      try {
-        updateExifFromForm();
-        const exifStr = piexif.dump(exifData);
-        const newDataUrl = piexif.insert(exifStr, originalDataURL);
-        
-        const link = document.createElement('a');
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
-        link.href = newDataUrl;
-        link.download = `photo_metadata_${timestamp}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } catch (err) {
-        alert('Error saving image: ' + err.message);
-        console.error(err);
-      }
-    }
-
-    function updateMapFromExif(exif) {
-      const lat = exif?.GPS?.[piexif.GPSIFD.GPSLatitude];
-      const lon = exif?.GPS?.[piexif.GPSIFD.GPSLongitude];
-      const latRef = exif?.GPS?.[piexif.GPSIFD.GPSLatitudeRef];
-      const lonRef = exif?.GPS?.[piexif.GPSIFD.GPSLongitudeRef];
-
-      if (!lat || !lon || !Array.isArray(lat) || !Array.isArray(lon)) {
-        gpsStatus.textContent = "No GPS data";
-        gpsStatus.style.background = "rgba(255, 87, 87, 0.2)";
-        gpsStatus.style.color = "#ff5757";
-        return;
-      }
-
-      const toDecimal = (coord, ref) => {
-        let val = coord[0] + coord[1] / 60 + coord[2] / 3600;
-        if (ref === "S" || ref === "W") val *= -1;
-        return val;
-      };
-
-      const toExifFormat = (decimal) => {
-        const deg = Math.floor(Math.abs(decimal));
-        const minFloat = (Math.abs(decimal) - deg) * 60;
-        const min = Math.floor(minFloat);
-        const sec = Math.round((minFloat - min) * 60 * 100) / 100;
-        return [deg, min, sec];
-      };
-
-      const latitude = toDecimal(lat, latRef);
-      const longitude = toDecimal(lon, lonRef);
-
-      gpsStatus.textContent = `${latitude.toFixed(6)}°, ${longitude.toFixed(6)}°`;
-      gpsStatus.style.background = "rgba(102, 126, 234, 0.2)";
-      gpsStatus.style.color = "#667eea";
-
-      if (!mapInitialized) {
-        mapInstance = L.map('map').setView([latitude, longitude], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
-        }).addTo(mapInstance);
-        mapInitialized = true;
-      }
-
-      if (mapMarker) mapInstance.removeLayer(mapMarker);
-      mapMarker = L.marker([latitude, longitude], { draggable: true }).addTo(mapInstance)
-        .bindPopup("📍 Drag to change GPS coordinates")
-        .openPopup();
-
-      mapMarker.on('dragend', () => {
-        const { lat, lng } = mapMarker.getLatLng();
-        const latExif = toExifFormat(lat);
-        const lonExif = toExifFormat(lng);
-
-        if (!exifData["GPS"]) exifData["GPS"] = {};
-        
-        exifData["GPS"][piexif.GPSIFD.GPSLatitude] = latExif;
-        exifData["GPS"][piexif.GPSIFD.GPSLatitudeRef] = lat >= 0 ? "N" : "S";
-        exifData["GPS"][piexif.GPSIFD.GPSLongitude] = lonExif;
-        exifData["GPS"][piexif.GPSIFD.GPSLongitudeRef] = lng >= 0 ? "E" : "W";
-
-        gpsStatus.textContent = `${lat.toFixed(6)}°, ${lng.toFixed(6)}°`;
-        renderForm();
-        jsonView.textContent = JSON.stringify(exifData, null, 2);
-      });
-
-      mapInstance.setView([latitude, longitude], 13);
-    }
-
-    mainUpload.addEventListener("change", e => {
-      if (e.target.files.length) {
-        loadImage(e.target.files[0]);
-      }
-    });
-
-    metaUpload.addEventListener("change", e => {
-      if (e.target.files.length) {
-        loadImage(e.target.files[0], true);
-      }
-    });
-
-    scrambleBtn.addEventListener("click", scrambleMetadata);
-    saveBtn.addEventListener("click", saveImage);
-
-    // Initialize empty map
-    if (!mapInitialized) {
-      mapInstance = L.map('map').setView([40, -95], 4);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(mapInstance);
-      mapInitialized = true;
-    }
-  </script>
-</body>
-</html>
